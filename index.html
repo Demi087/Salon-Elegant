@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Салон красоты Элегант</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/accessible.css">
+<style>
+.standalone-nav-btn { background: none; border: none; font-size: 14px; font-weight: 500; cursor: pointer; color: var(--dark); padding: 4px 6px; }
+.standalone-nav-btn:hover { color: var(--primary); }
+.standalone-nav-btn.active { color: var(--primary); font-weight: 700; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 999; align-items: center; justify-content: center; }
+.modal-overlay.active { display: flex; }
+.discount-banner-client { background: #dcfce7; border: 1px solid #86efac; color: #14532d; padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 13px; font-weight: 500; }
+.guest-banner-client { background: #fef3c7; border: 1px solid #fde68a; color: #78350f; padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+<div class="container header-inner">
+<a href="#" onclick="showPage('home'); return false;" class="logo">Салон Элегант</a>
+
+<nav class="main-nav">
+<button class="standalone-nav-btn active" onclick="showPage('home')" id="nav-home">Главная</button>
+<button class="standalone-nav-btn" onclick="showPage('services')" id="nav-services">Услуги</button>
+<button class="standalone-nav-btn" onclick="showPage('masters')" id="nav-masters">Мастера</button>
+<button class="standalone-nav-btn" onclick="showPage('prices')" id="nav-prices">Цены</button>
+<button class="standalone-nav-btn" onclick="showPage('news')" id="nav-news">Новости</button>
+<button class="standalone-nav-btn" onclick="showPage('reviews')" id="nav-reviews">Отзывы</button>
+<button class="standalone-nav-btn" onclick="showPage('contacts')" id="nav-contacts">Контакты</button>
+<button class="standalone-nav-btn" onclick="showPage('sitemap')" id="nav-sitemap">Карта сайта</button>
+<button class="standalone-nav-btn" onclick="showPage('profile')" id="nav-profile" style="display:none; color:var(--primary); font-weight:bold;">Личный кабинет (-10%)</button>
+</nav>
+
+<div class="header-actions">
+<div class="search-form">
+<input type="text" id="site-search-input" placeholder="Поиск по сайту...">
+<button type="button" onclick="performSearch()">Найти</button>
+</div>
+
+<span id="user-display" class="user-info">
+<button class="btn btn-outline" onclick="openAuth('login')">Вход</button>
+<button class="btn" onclick="openAuth('register')">Регистрация</button>
+</span>
+
+<button type="button" class="btn-accessibility" onclick="toggleAccessibleMode()">Версия для слабовидящих</button>
+</div>
+</div>
+</header>
+
+<main class="container">
+
+<div id="page-home" class="tab-content active">
+<section class="hero" style="grid-template-columns:1fr;">
+<div class="hero-content">
+<span class="hero-badge">Салон красоты Элегант</span>
+<h1>Искусство гармонии и безупречного стиля</h1>
+<p>Индивидуальные программы ухода и команда сертифицированных специалистов.</p>
+<div class="hero-actions">
+<button class="btn btn-large" onclick="showPage('booking')">Записаться на прием</button>
+<button class="btn btn-large btn-outline" onclick="showPage('services')">Каталог услуг</button>
+</div>
+</div>
+</section>
+
+<section class="banner-section">
+<div class="banner-card">
+<div>
+<div class="banner-title">Специальное предложение месяца</div>
+<div class="banner-desc">Скидка 20% на первое посещение любого специалиста при онлайн-записи через сайт.</div>
+</div>
+<button class="btn btn-small" onclick="showPage('booking')">Получить скидку</button>
+</div>
+</section>
+
+<section class="section">
+<div class="section-header">
+<h2>Популярные услуги</h2>
+<a href="#" onclick="showPage('services'); return false;" class="link-more">Весь каталог услуг &rarr;</a>
+</div>
+<div class="grid grid-3" id="home-services-grid"></div>
+</section>
+
+<section class="section">
+<div class="section-header">
+<h2>Ведущие специалисты</h2>
+<a href="#" onclick="showPage('masters'); return false;" class="link-more">Все мастера &rarr;</a>
+</div>
+<div class="grid grid-4" id="home-masters-grid"></div>
+</section>
+
+<section class="section">
+<div class="section-header">
+<h2>Новости и события</h2>
+<a href="#" onclick="showPage('news'); return false;" class="link-more">Все публикации &rarr;</a>
+</div>
+<div class="grid grid-3" id="home-news-grid"></div>
+</section>
+
+<section class="cta-banner">
+<h2>Запишитесь на удобное время онлайн</h2>
+<p>Администратор свяжется с вами в течение 10 минут для согласования деталей визита.</p>
+<button class="btn btn-large" onclick="showPage('booking')">Перейти к записи</button>
+</section>
+</div>
+
+<div id="page-services" class="tab-content">
+<div class="page-heading">
+<h1>Услуги салона красоты</h1>
+<p>Широкий спектр процедур эстетической медицины, парикмахерского зала, ногтевого сервиса и массажа.</p>
+</div>
+<div id="all-services-container"></div>
+</div>
+
+<div id="page-masters" class="tab-content">
+<div class="page-heading">
+<h1>Команда наших специалистов</h1>
+<p>Каждый мастер салона имеет профильное образование, квалификационные сертификаты и опыт от 6 до 11 лет.</p>
+</div>
+<div class="grid grid-3" id="all-masters-container"></div>
+</div>
+
+<div id="page-prices" class="tab-content">
+<div class="page-heading">
+<h1>Стоимость услуг салона</h1>
+<p>Фиксированные прозрачные цены без скрытых доплат. Все расходные материалы включены в стоимость.</p>
+</div>
+<div class="table-responsive">
+<table class="data-table">
+<thead>
+<tr>
+<th>Категория направления</th>
+<th>Наименование услуги</th>
+<th>Длительность</th>
+<th>Стоимость</th>
+<th>Действие</th>
+</tr>
+</thead>
+<tbody id="prices-table-body"></tbody>
+</table>
+</div>
+</div>
+
+<div id="page-news" class="tab-content">
+<div class="page-heading">
+<h1>Новости и специальные предложения</h1>
+<p>Актуальные события салона, скидки, анонсы мастер-классов и публикации о бьюти-новинках.</p>
+</div>
+<div class="grid grid-2" id="all-news-container"></div>
+</div>
+
+<div id="page-reviews" class="tab-content">
+<div class="page-heading">
+<h1>Отзывы клиентов</h1>
+<p>Нам важно мнение каждого посетителя. Оставьте свой комментарий о качестве обслуживания.</p>
+</div>
+<div class="contacts-grid">
+<div id="reviews-list-container"></div>
+<div class="card">
+<h3>Оставить отзыв</h3>
+<form onsubmit="handleReviewSubmit(event)" class="form-standard">
+<label>Ваше имя
+<input type="text" id="rev-name" required placeholder="Иван Иванов">
+</label>
+<label>Оценка качества
+<select id="rev-rating">
+<option value="5">5 - Отлично</option>
+<option value="4">4 - Хорошо</option>
+<option value="3">3 - Удовлетворительно</option>
+</select>
+</label>
+<label>Текст отзыва
+<textarea id="rev-text" rows="4" required placeholder="Поделитесь вашими впечатлениями..."></textarea>
+</label>
+<button type="submit" class="btn btn-block">Опубликовать отзыв</button>
+</form>
+</div>
+</div>
+</div>
+
+<div id="page-contacts" class="tab-content">
+<div class="page-heading">
+<h1>Контакты и схема проезда</h1>
+<p>Мы находимся в самом центре города. Удобная парковка для гостей и шаговая доступность от метро.</p>
+</div>
+<div class="contacts-grid">
+<div class="card">
+<h3>Контактная информация</h3>
+<p><strong>Адрес:</strong> г. Москва, Красная площадь, д. 3 (ГУМ)</p>
+<p><strong>Ориентир:</strong> рядом станции метро «Охотный Ряд», «Площадь Революции» и «Театральная»</p>
+<p><strong>Телефон:</strong> +7 (495) 123-45-67</p>
+<p><strong>Электронная почта:</strong> info@salon-elegant.ru</p>
+<p><strong>Режим работы:</strong> Пн-Пт с 09:00 до 21:00, Сб-Вс с 10:00 до 20:00</p>
+</div>
+<div class="card">
+<h3>Форма обратной связи</h3>
+<form onsubmit="handleContactSubmit(event)" class="form-standard">
+<label>Ваше имя
+<input type="text" id="msg-name" required placeholder="Ваше имя">
+</label>
+<label>Электронная почта
+<input type="email" id="msg-email" required placeholder="name@mail.ru">
+</label>
+<label>Сообщение
+<textarea id="msg-text" rows="4" required placeholder="Ваш вопрос..."></textarea>
+</label>
+<button type="submit" class="btn btn-block">Отправить сообщение</button>
+</form>
+</div>
+</div>
+<div class="card map-container">
+<h3>Как нас найти</h3>
+<div class="map-frame-wrap">
+<iframe title="Карта адреса салона на Красной площади" src="https://www.google.com/maps?q=%D0%93%D0%A3%D0%9C%2C%20%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D0%B0%D1%8F%20%D0%BF%D0%BB%D0%BE%D1%89%D0%B0%D0%B4%D1%8C%2C%203%2C%20%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+</div>
+<p><a href="https://www.google.com/maps/search/?api=1&amp;query=%D0%93%D0%A3%D0%9C%2C%20%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D0%B0%D1%8F%20%D0%BF%D0%BB%D0%BE%D1%89%D0%B0%D0%B4%D1%8C%2C%203%2C%20%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0" target="_blank" rel="noopener">Открыть адрес в Google Maps</a></p>
+</div>
+</div>
+
+<div id="page-booking" class="tab-content">
+<div class="page-heading">
+<h1>Онлайн-запись на процедуры</h1>
+<p>Выберите подходящую услугу, мастера и дату визита.</p>
+</div>
+
+<div id="booking-discount-banner"></div>
+
+<div class="card form-card-booking">
+<div id="booking-alert" style="display:none" class="alert alert-success">
+Вы успешно записаны на прием! Администратор свяжется с вами для подтверждения.
+</div>
+<form onsubmit="handleBookingSubmit(event)" class="form-standard">
+<label>Ваше имя и фамилия
+<input type="text" id="book-name" required placeholder="Имя и фамилия">
+</label>
+<label>Контактный телефон
+<input type="tel" id="book-phone" required placeholder="+7 (999) 123-45-67">
+</label>
+<label>Выберите услугу
+<select id="book-service" required onchange="updateBookingPrice()"></select>
+</label>
+<label>Выберите мастера
+<select id="book-master" required></select>
+</label>
+<label>Дата и время визита
+<input type="datetime-local" id="book-date" required>
+</label>
+<div id="booking-price-preview" style="background:#f8f6f5; padding:12px; border-radius:4px; font-size:14px; font-weight:bold;"></div>
+<button type="submit" class="btn btn-large btn-block">Подтвердить запись</button>
+</form>
+</div>
+</div>
+
+<div id="page-profile" class="tab-content">
+<div class="page-heading">
+<h1>Личный кабинет постоянного клиента</h1>
+<p>История записей, персональная скидка и бонусный баланс.</p>
+</div>
+<div class="contacts-grid" style="margin-bottom:24px;">
+<div class="card">
+<h3>Профиль пользователя</h3>
+<p>Логин: <strong id="prof-uname">user</strong></p>
+<p>Статус: <strong style="color:var(--primary);">Постоянный клиент</strong></p>
+<p>Персональная скидка: <strong style="color:var(--success);">10% на все услуги</strong></p>
+</div>
+<div class="card" style="background:#fcf8f3; border-color:#ebd9c5;">
+<h3 style="color:var(--accent);">Программа лояльности</h3>
+<p style="font-size:22px; font-weight:bold; color:var(--primary);">Баланс: 1 250 бонусов</p>
+<p>1 бонус = 1 рубль. Скидка применяется автоматически при онлайн-записи.</p>
+<button class="btn btn-small" onclick="showPage('booking')">Записаться со скидкой 10%</button>
+</div>
+</div>
+<h3>Мои записи</h3>
+<div class="table-responsive">
+<table class="data-table">
+<thead><tr><th>№</th><th>Услуга</th><th>Мастер</th><th>Дата</th><th>Статус</th><th>Действие</th></tr></thead>
+<tbody id="prof-bookings-tbody"></tbody>
+</table>
+</div>
+</div>
+
+<div id="page-search" class="tab-content">
+<div class="page-heading">
+<h1>Результаты поиска</h1>
+<p id="search-results-count"></p>
+</div>
+<div class="grid grid-2" id="search-results-grid"></div>
+</div>
+
+<div id="page-sitemap" class="tab-content">
+<div class="page-heading">
+<h1>Карта сайта</h1>
+<p>Полная иерархическая структура разделов и страниц ресурса.</p>
+</div>
+<div class="card">
+<ul class="sitemap-tree">
+<li><a href="#" onclick="showPage('home'); return false;">Главная страница</a></li>
+<li><a href="#" onclick="showPage('services'); return false;">Каталог услуг</a></li>
+<li><a href="#" onclick="showPage('masters'); return false;">Наши мастера</a></li>
+<li><a href="#" onclick="showPage('prices'); return false;">Прайс-лист</a></li>
+<li><a href="#" onclick="showPage('news'); return false;">Новости и акции</a></li>
+<li><a href="#" onclick="showPage('reviews'); return false;">Отзывы посетителей</a></li>
+<li><a href="#" onclick="showPage('booking'); return false;">Онлайн-запись</a></li>
+<li><a href="#" onclick="showPage('contacts'); return false;">Контакты и адрес</a></li>
+<li><a href="#" onclick="showPage('profile'); return false;">Личный кабинет клиента</a></li>
+<li><a href="#" onclick="showPage('admin'); return false;">Панель администратора</a></li>
+</ul>
+</div>
+</div>
+
+<div id="page-admin" class="tab-content">
+<div class="page-heading">
+<h1>Панель администратора салона</h1>
+<p>Управление всеми заявками на бронирование и статусами визитов.</p>
+</div>
+<div class="table-responsive">
+<table class="data-table">
+<thead>
+<tr>
+<th>№</th>
+<th>Клиент</th>
+<th>Телефон</th>
+<th>Услуга</th>
+<th>Мастер</th>
+<th>Дата</th>
+<th>Статус</th>
+<th>Действия</th>
+</tr>
+</thead>
+<tbody id="admin-bookings-tbody"></tbody>
+</table>
+</div>
+</div>
+
+</main>
+
+<footer class="site-footer">
+<div class="container footer-inner">
+<div class="footer-col">
+<h4>Салон красоты Элегант</h4>
+<p>Профессиональные бьюти-услуги премиум-класса с 2018 года. Лицензия № ЛО-77-01-019824.</p>
+</div>
+<div class="footer-col">
+<h4>Контакты</h4>
+<p>г. Москва, Красная площадь, д. 3 (ГУМ)</p>
+<p>Телефон: +7 (495) 123-45-67</p>
+<p>Электронная почта: info@salon-elegant.ru</p>
+</div>
+<div class="footer-col">
+<h4>Навигация</h4>
+<p><a href="#" onclick="showPage('services'); return false;">Каталог услуг</a></p>
+<p><a href="#" onclick="showPage('prices'); return false;">Прайс-лист</a></p>
+<p><a href="#" onclick="showPage('booking'); return false;">Онлайн-запись</a></p>
+<p><a href="#" onclick="showPage('sitemap'); return false;">Карта сайта</a></p>
+</div>
+</div>
+<div class="copyright">
+&copy; Салон красоты Элегант. Все права защищены. Разработано по ГОСТ Р 52872-2012 и ГОСТ 34.602-2020.
+</div>
+</footer>
+
+<div id="auth-modal" class="modal-overlay">
+<div class="card auth-card" style="width: 100%; max-width: 440px; position: relative;">
+<button onclick="closeAuth()" style="position: absolute; right: 15px; top: 15px; border: none; background: none; font-size: 20px; cursor: pointer;">&times;</button>
+<h2 id="auth-modal-title" style="margin-bottom: 15px;">Вход в систему</h2>
+<form onsubmit="handleAuthSubmit(event)" class="form-standard">
+<label>Логин
+<input type="text" id="auth-username" required placeholder="Введите имя пользователя">
+</label>
+<label id="auth-email-wrap" style="display:none">Email
+<input type="email" id="auth-email" placeholder="user@example.ru">
+</label>
+<label>Пароль
+<input type="password" id="auth-password" required placeholder="Введите пароль">
+</label>
+<button type="submit" class="btn btn-large btn-block" id="auth-submit-btn">Войти</button>
+</form>
+<div class="auth-helper">
+<p>Тестовые учетные записи:</p>
+<button type="button" class="btn btn-small" onclick="quickFill('admin')">Заполнить admin</button>
+<button type="button" class="btn btn-small btn-outline" onclick="quickFill('user')">Заполнить user</button>
+</div>
+</div>
+</div>
+
+<script>
+var servicesData = [
+{ id: 1, category: 'Парикмахерские услуги', title: 'Модельная женская стрижка', description: 'Индивидуальный подбор формы с учетом структуры волос, типа лица и укладка по форме.', price: 2500, duration: 60, img: 'assets/img/service_hair.svg' },
+{ id: 2, category: 'Парикмахерские услуги', title: 'Сложное окрашивание волос', description: 'Многоуровневое осветление и тонирование красителями премиум-класса.', price: 6800, duration: 180, img: 'assets/img/service_hair.svg' },
+{ id: 3, category: 'Парикмахерские услуги', title: 'Глубокий восстанавливающий уход', description: 'Многоступенчатая реконструкция кератинового слоя и увлажнение поврежденных волос.', price: 3200, duration: 75, img: 'assets/img/service_hair.svg' },
+{ id: 4, category: 'Ногтевой сервис', title: 'Комбинированный маникюр с покрытием', description: 'Аппаратная обработка кутикулы, выравнивание ногтевой пластины и покрытие гель-лак.', price: 2200, duration: 90, img: 'assets/img/service_nails.svg' },
+{ id: 5, category: 'Ногтевой сервис', title: 'Смарт-педикюр с обработкой стопы', description: 'Аппаратный уход за стопами с применением молекулярного масла и эстетическое покрытие.', price: 3100, duration: 90, img: 'assets/img/service_nails.svg' },
+{ id: 6, category: 'Косметология и уход', title: 'Чистка лица комплексная', description: 'Атравматичное очищение пор, пилинг-гоммаж, противовоспалительная сыворотка и маска.', price: 3900, duration: 90, img: 'assets/img/service_cosmetology.svg' },
+{ id: 7, category: 'Косметология и уход', title: 'Биоревитализирующий пилинг', description: 'Мгновенный лифтинг-эффект, сужение пор и сияние кожи без шелушения и реабилитации.', price: 3500, duration: 50, img: 'assets/img/service_cosmetology.svg' },
+{ id: 8, category: 'Визаж и брови', title: 'Архитектура и окрашивание бровей', description: 'Моделирование гармоничной формы, коррекция пинцетом и стойкое окрашивание.', price: 2100, duration: 60, img: 'assets/img/service_makeup.svg' },
+{ id: 9, category: 'Визаж и брови', title: 'Вечерний макияж', description: 'Создание стойкого выразительного образа для торжественных мероприятий и фотосессий.', price: 3800, duration: 80, img: 'assets/img/service_makeup.svg' },
+{ id: 10, category: 'Массаж и SPA', title: 'Классический расслабляющий массаж', description: 'Снятие мышечных зажимов, улучшение лимфотока и снятие стресса с аромамаслами.', price: 3300, duration: 60, img: 'assets/img/service_massage.svg' },
+{ id: 11, category: 'Массаж и SPA', title: 'Скульптурный массаж лица', description: 'Глубокая проработка мимических мышц для естественной подтяжки контуров лица.', price: 2900, duration: 50, img: 'assets/img/service_massage.svg' }
+];
+
+var mastersData = [
+{ id: 1, name: 'Анна Смирнова', specialization: 'Топ-стилист, колорист', exp: 9, desc: 'Специалист международного уровня по сложным техникам окрашивания и уходу за волосами.', img: 'assets/img/master_1.svg' },
+{ id: 2, name: 'Мария Иванова', specialization: 'Мастер ногтевого сервиса', exp: 6, desc: 'Дипломированный специалист аппаратных методик педикюра и эстетического маникюра.', img: 'assets/img/master_2.svg' },
+{ id: 3, name: 'Ольга Петрова', specialization: 'Врач-косметолог, дерматолог', exp: 11, desc: 'Высшее медицинское образование. Специализируется на аппаратной и эстетической косметологии.', img: 'assets/img/master_3.svg' },
+{ id: 4, name: 'Елена Кузнецова', specialization: 'Художник-визажист', exp: 7, desc: 'Создает свадебные и вечерние образы, обучает индивидуальному повседневному макияжу.', img: 'assets/img/master_4.svg' },
+{ id: 5, name: 'Дмитрий Соколов', specialization: 'Мастер массажа и спа-терапевт', exp: 8, desc: 'Сертифицированный специалист по оздоровительному и моделирующему массажу тела.', img: 'assets/img/master_5.svg' }
+];
+
+var newsData = [
+{ id: 1, category: 'Новости салона', title: 'Открытие обновленного спа-кабинета', desc: 'К услугам гостей открыт изолированный кабинет релаксации с мягким рассеянным светом и анатомическими кушетками.', date: '15.11.2025', img: 'assets/img/news_1.svg' },
+{ id: 2, category: 'Акции и скидки', title: 'Скидка 20% на сложное окрашивание', desc: 'В течение месяца при записи на любое сложное окрашивание действует скидка 20% и восстанавливающая маска в подарок.', date: '08.11.2025', img: 'assets/img/news_2.svg' },
+{ id: 3, category: 'Продукция', title: 'Поступление органической косметики', desc: 'В продаже представлена новая линейка органической косметики европейского производства для домашнего ухода.', date: '24.10.2025', img: 'assets/img/news_3.svg' }
+];
+
+var reviewsData = [
+{ name: 'Екатерина Воронова', text: 'Была на сложном окрашивании у Анны Смирновой. Результат великолепный, цвет благородный, а волосы мягкие и блестящие.', rating: 5, date: '20.11.2025', isVerified: true },
+{ name: 'Светлана Михайлова', text: 'Хожу на маникюр к Марии. Инструменты вскрываются при мне, кутикула обработана идеально, покрытие держится долго.', rating: 5, date: '14.11.2025', isVerified: true },
+{ name: 'Татьяна Романова', text: 'Прошла курс скульптурного массажа лица у Дмитрия. Заметно подтянулся овал лица, ушла отечность, прекрасный результат.', rating: 5, date: '02.11.2025', isVerified: true }
+];
+
+var bookingsData = [
+{ id: 1, name: 'user', phone: '+7 (916) 123-45-67', service: 'Модельная женская стрижка', master: 'Анна Смирнова', date: '05.12.2025 14:00', status: 'new' },
+{ id: 2, name: 'Дарья Мартынова', phone: '+7 (925) 987-65-43', service: 'Комбинированный маникюр с покрытием', master: 'Мария Иванова', date: '06.12.2025 11:30', status: 'confirmed' }
+];
+
+var currentUser = null;
+var authMode = 'login';
+var isAccessible = false;
+
+function showPage(pageId, extraParam) {
+var tabs = document.querySelectorAll('.tab-content');
+for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+var target = document.getElementById('page-' + pageId);
+if (target) target.classList.add('active');
+
+var navBtns = document.querySelectorAll('.standalone-nav-btn');
+for (var n = 0; n < navBtns.length; n++) navBtns[n].classList.remove('active');
+var curNav = document.getElementById('nav-' + pageId);
+if (curNav) curNav.classList.add('active');
+
+window.scrollTo(0, 0);
+
+if (pageId === 'booking') {
+updateBookingBanner();
+updateBookingPrice();
+if (extraParam) {
+if (extraParam.serviceId) document.getElementById('book-service').value = extraParam.serviceId;
+if (extraParam.masterId) document.getElementById('book-master').value = extraParam.masterId;
+updateBookingPrice();
+}
+}
+if (pageId === 'profile') {
+renderProfile();
+}
+}
+
+function updateBookingBanner() {
+var b = document.getElementById('booking-discount-banner');
+if (currentUser && currentUser.role === 'user') {
+b.innerHTML = '<div class="discount-banner-client">Вы авторизованы как <strong>' + currentUser.username + '</strong>. Применена персональная скидка <strong>10%</strong>. Данные подставлены автоматически.</div>';
+document.getElementById('book-name').value = currentUser.username;
+document.getElementById('book-phone').value = '+7 (916) 123-45-67';
+} else {
+b.innerHTML = '<div class="guest-banner-client">Вы оформляете запись как гость без скидки. <button type="button" class="btn btn-small" onclick="openAuth(\'login\')" style="margin-left:8px;">Войти со скидкой 10%</button></div>';
+}
+}
+
+function updateBookingPrice() {
+var sId = Number(document.getElementById('book-service').value);
+var sObj = servicesData.find(function(s){ return s.id === sId; });
+var pBox = document.getElementById('booking-price-preview');
+if (!sObj) { pBox.innerText = ''; return; }
+if (currentUser && currentUser.role === 'user') {
+var disc = Math.round(sObj.price * 0.9);
+pBox.innerHTML = 'Стоимость: <span style="text-decoration:line-through; color:#888;">' + sObj.price + ' руб.</span> <span style="color:var(--primary); font-size:16px;">' + disc + ' руб. (скидка 10%)</span>';
+} else {
+pBox.innerHTML = 'Стоимость: ' + sObj.price + ' руб.';
+}
+}
+
+function renderHome() {
+var sg = document.getElementById('home-services-grid');
+sg.innerHTML = '';
+for (var i = 0; i < Math.min(6, servicesData.length); i++) {
+var s = servicesData[i];
+sg.innerHTML += '<div class="card"><span class="category-tag">' + s.category + '</span><h3>' + s.title + '</h3><p>' + s.description + '</p><div class="card-footer"><span class="price">' + s.price + ' руб.</span><button class="btn btn-small" onclick="showPage(\'booking\', {serviceId:' + s.id + '})">Записаться</button></div></div>';
+}
+
+var mg = document.getElementById('home-masters-grid');
+mg.innerHTML = '';
+for (var m = 0; m < Math.min(4, mastersData.length); m++) {
+var ma = mastersData[m];
+mg.innerHTML += '<div class="card master-card"><h3>' + ma.name + '</h3><p class="specialization">' + ma.specialization + '</p><p class="experience">Стаж: ' + ma.exp + ' лет</p><p>' + ma.desc + '</p></div>';
+}
+
+var ng = document.getElementById('home-news-grid');
+ng.innerHTML = '';
+for (var n = 0; n < Math.min(3, newsData.length); n++) {
+var nw = newsData[n];
+ng.innerHTML += '<div class="card news-card"><span class="date-badge">' + nw.date + '</span><h3>' + nw.title + '</h3><p>' + nw.desc + '</p></div>';
+}
+}
+
+function renderServices() {
+var sc = document.getElementById('all-services-container');
+sc.innerHTML = '<div class="grid grid-2">';
+for (var i = 0; i < servicesData.length; i++) {
+var s = servicesData[i];
+sc.innerHTML += '<div class="card"><span class="category-tag">' + s.category + '</span><h3>' + s.title + '</h3><p>' + s.description + '</p><div class="card-footer"><span class="price">' + s.price + ' руб. (' + s.duration + ' мин)</span><button class="btn btn-small" onclick="showPage(\'booking\', {serviceId:' + s.id + '})">Записаться</button></div></div>';
+}
+sc.innerHTML += '</div>';
+}
+
+function renderMasters() {
+var mc = document.getElementById('all-masters-container');
+mc.innerHTML = '';
+for (var i = 0; i < mastersData.length; i++) {
+var m = mastersData[i];
+mc.innerHTML += '<div class="card master-profile-card"><h3>' + m.name + '</h3><p class="specialization">' + m.specialization + '</p><p class="experience-badge">Опыт работы: ' + m.exp + ' лет</p><p>' + m.desc + '</p><button class="btn btn-small btn-block" style="margin-top:15px" onclick="showPage(\'booking\', {masterId:' + m.id + '})">Записаться к мастеру</button></div>';
+}
+}
+
+function renderPrices() {
+var pb = document.getElementById('prices-table-body');
+pb.innerHTML = '';
+for (var i = 0; i < servicesData.length; i++) {
+var s = servicesData[i];
+pb.innerHTML += '<tr><td>' + s.category + '</td><td><strong>' + s.title + '</strong></td><td>' + s.duration + ' мин.</td><td class="price-cell">' + s.price + ' руб.</td><td><button class="btn btn-small" onclick="showPage(\'booking\', {serviceId:' + s.id + '})">Запись</button></td></tr>';
+}
+}
+
+function renderNews() {
+var nc = document.getElementById('all-news-container');
+nc.innerHTML = '';
+for (var i = 0; i < newsData.length; i++) {
+var n = newsData[i];
+nc.innerHTML += '<div class="card news-card-full"><span class="category-tag">' + n.category + '</span><span class="date">' + n.date + '</span><h3>' + n.title + '</h3><p>' + n.desc + '</p></div>';
+}
+}
+
+function renderReviews() {
+var rc = document.getElementById('reviews-list-container');
+rc.innerHTML = '';
+for (var i = 0; i < reviewsData.length; i++) {
+var r = reviewsData[i];
+var vBadge = r.isVerified ? ' <span style="background:#dcfce7; color:#14532d; font-size:10px; padding:2px 6px; border-radius:3px; margin-left:6px;">Проверенный клиент</span>' : '';
+rc.innerHTML += '<div class="card" style="margin-bottom:15px"><div class="review-header"><strong>' + r.name + vBadge + '</strong><span>Оценка: ' + r.rating + ' из 5</span></div><p>' + r.text + '</p><div class="review-date">' + r.date + '</div></div>';
+}
+}
+
+function renderProfile() {
+if (!currentUser) return;
+document.getElementById('prof-uname').innerText = currentUser.username;
+var pb = document.getElementById('prof-bookings-tbody');
+pb.innerHTML = '';
+var myb = bookingsData.filter(function(b){ return b.name.toLowerCase() === currentUser.username.toLowerCase(); });
+if (myb.length === 0) {
+pb.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px;">У вас пока нет записей.</td></tr>';
+} else {
+for (var i = 0; i < myb.length; i++) {
+var b = myb[i];
+var cancelBtn = b.status === 'new' ? '<button class="btn btn-small btn-danger" onclick="cancelMyBooking(' + b.id + ')">Отменить</button>' : '-';
+pb.innerHTML += '<tr><td>' + b.id + '</td><td>' + b.service + '</td><td>' + b.master + '</td><td>' + b.date + '</td><td><span class="status-badge status-' + b.status + '">' + b.status + '</span></td><td>' + cancelBtn + '</td></tr>';
+}
+}
+}
+
+function cancelMyBooking(id) {
+for (var i = 0; i < bookingsData.length; i++) {
+if (bookingsData[i].id === id) {
+bookingsData[i].status = 'canceled';
+break;
+}
+}
+renderProfile();
+renderAdmin();
+}
+
+function renderBookingSelectors() {
+var bs = document.getElementById('book-service');
+bs.innerHTML = '<option value="">-- Выберите услугу --</option>';
+for (var i = 0; i < servicesData.length; i++) {
+var s = servicesData[i];
+bs.innerHTML += '<option value="' + s.id + '">' + s.category + ' - ' + s.title + ' (' + s.price + ' руб.)</option>';
+}
+
+var bm = document.getElementById('book-master');
+bm.innerHTML = '<option value="">-- Выберите мастера --</option>';
+for (var m = 0; m < mastersData.length; m++) {
+var ma = mastersData[m];
+bm.innerHTML += '<option value="' + ma.id + '">' + ma.name + ' (' + ma.specialization + ')</option>';
+}
+
+var bd = document.getElementById('book-date');
+var now = new Date();
+now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+bd.min = now.toISOString().slice(0, 16);
+}
+
+function renderAdmin() {
+var at = document.getElementById('admin-bookings-tbody');
+at.innerHTML = '';
+for (var i = 0; i < bookingsData.length; i++) {
+var b = bookingsData[i];
+var acts = b.status === 'new' ? '<button class="btn btn-small" onclick="updateStatus(' + b.id + ', \'confirmed\')">Подтвердить</button> <button class="btn btn-small btn-danger" onclick="updateStatus(' + b.id + ', \'canceled\')">Отменить</button>' : '-';
+at.innerHTML += '<tr><td>' + b.id + '</td><td>' + b.name + '</td><td>' + b.phone + '</td><td>' + b.service + '</td><td>' + b.master + '</td><td>' + b.date + '</td><td><span class="status-badge status-' + b.status + '">' + b.status + '</span></td><td>' + acts + '</td></tr>';
+}
+}
+
+function updateStatus(id, newStatus) {
+for (var i = 0; i < bookingsData.length; i++) {
+if (bookingsData[i].id === id) {
+bookingsData[i].status = newStatus;
+break;
+}
+}
+renderAdmin();
+if (currentUser) renderProfile();
+}
+
+function handleBookingSubmit(e) {
+e.preventDefault();
+var name = document.getElementById('book-name').value;
+var phone = document.getElementById('book-phone').value;
+var sId = Number(document.getElementById('book-service').value);
+var mId = Number(document.getElementById('book-master').value);
+var date = document.getElementById('book-date').value;
+
+var sObj = servicesData.find(function(s){ return s.id === sId; });
+var mObj = mastersData.find(function(m){ return m.id === mId; });
+
+bookingsData.unshift({
+id: bookingsData.length + 1,
+name: name,
+phone: phone,
+service: sObj ? sObj.title : '',
+master: mObj ? mObj.name : '',
+date: date.replace('T', ' '),
+status: 'new'
+});
+
+document.getElementById('booking-alert').style.display = 'block';
+renderAdmin();
+if (currentUser) renderProfile();
+setTimeout(function(){ document.getElementById('booking-alert').style.display = 'none'; }, 5000);
+}
+
+function handleReviewSubmit(e) {
+e.preventDefault();
+var name = document.getElementById('rev-name').value;
+var rating = document.getElementById('rev-rating').value;
+var text = document.getElementById('rev-text').value;
+
+reviewsData.unshift({
+name: name,
+rating: rating,
+text: text,
+date: new Date().toLocaleDateString('ru-RU'),
+isVerified: !!currentUser
+});
+
+renderReviews();
+document.getElementById('rev-text').value = '';
+alert('Спасибо! Ваш отзыв опубликован.');
+}
+
+function handleContactSubmit(e) {
+e.preventDefault();
+alert('Ваше сообщение отправлено! Администратор перезвонит вам.');
+document.getElementById('msg-text').value = '';
+}
+
+function performSearch() {
+var q = document.getElementById('site-search-input').value.trim().toLowerCase();
+if (!q) return;
+
+var results = [];
+for (var i = 0; i < servicesData.length; i++) {
+if (servicesData[i].title.toLowerCase().indexOf(q) !== -1 || servicesData[i].description.toLowerCase().indexOf(q) !== -1) {
+results.push({ type: 'Услуга', title: servicesData[i].title, desc: servicesData[i].description });
+}
+}
+for (var m = 0; m < mastersData.length; m++) {
+if (mastersData[m].name.toLowerCase().indexOf(q) !== -1 || mastersData[m].specialization.toLowerCase().indexOf(q) !== -1) {
+results.push({ type: 'Мастер', title: mastersData[m].name, desc: mastersData[m].specialization });
+}
+}
+for (var n = 0; n < newsData.length; n++) {
+if (newsData[n].title.toLowerCase().indexOf(q) !== -1 || newsData[n].desc.toLowerCase().indexOf(q) !== -1) {
+results.push({ type: 'Новость', title: newsData[n].title, desc: newsData[n].desc });
+}
+}
+
+document.getElementById('search-results-count').innerText = 'По запросу «' + q + '» найдено совпадений: ' + results.length;
+var rg = document.getElementById('search-results-grid');
+rg.innerHTML = '';
+if (results.length === 0) {
+rg.innerHTML = '<div class="alert alert-error">Ничего не найдено. Попробуйте другой запрос.</div>';
+} else {
+for (var r = 0; r < results.length; r++) {
+rg.innerHTML += '<div class="card"><span class="category-tag">' + results[r].type + '</span><h3>' + results[r].title + '</h3><p>' + results[r].desc + '</p></div>';
+}
+}
+
+showPage('search');
+}
+
+function openAuth(mode) {
+authMode = mode;
+document.getElementById('auth-modal-title').innerText = mode === 'login' ? 'Вход в систему' : 'Регистрация пользователя';
+document.getElementById('auth-submit-btn').innerText = mode === 'login' ? 'Войти' : 'Зарегистрироваться';
+document.getElementById('auth-email-wrap').style.display = mode === 'register' ? 'block' : 'none';
+document.getElementById('auth-modal').classList.add('active');
+}
+
+function closeAuth() {
+document.getElementById('auth-modal').classList.remove('active');
+}
+
+function quickFill(type) {
+if (type === 'admin') {
+document.getElementById('auth-username').value = 'admin';
+document.getElementById('auth-password').value = 'admin123';
+} else {
+document.getElementById('auth-username').value = 'user';
+document.getElementById('auth-password').value = 'user123';
+}
+}
+
+function handleAuthSubmit(e) {
+e.preventDefault();
+var u = document.getElementById('auth-username').value;
+currentUser = { username: u, role: (u === 'admin' ? 'admin' : 'user') };
+
+var ud = document.getElementById('user-display');
+if (currentUser.role === 'admin') {
+ud.innerHTML = 'Пользователь: <strong>admin</strong> <button class="btn btn-small" onclick="showPage(\'admin\')">Панель управления</button> <button class="btn btn-small btn-outline" onclick="logoutUser()">Выход</button>';
+document.getElementById('nav-profile').style.display = 'none';
+} else {
+ud.innerHTML = 'Клиент: <strong>' + u + '</strong> (-10%) <button class="btn btn-small" onclick="showPage(\'profile\')">Кабинет</button> <button class="btn btn-small btn-outline" onclick="logoutUser()">Выход</button>';
+document.getElementById('nav-profile').style.display = 'inline-block';
+}
+
+closeAuth();
+if (currentUser.role === 'admin') showPage('admin');
+else showPage('profile');
+}
+
+function logoutUser() {
+currentUser = null;
+var ud = document.getElementById('user-display');
+ud.innerHTML = '<button class="btn btn-outline" onclick="openAuth(\'login\')">Вход</button> <button class="btn" onclick="openAuth(\'register\')">Регистрация</button>';
+document.getElementById('nav-profile').style.display = 'none';
+showPage('home');
+}
+
+function toggleAccessibleMode() {
+isAccessible = !isAccessible;
+if (isAccessible) {
+document.body.classList.add('accessible-mode');
+} else {
+document.body.classList.remove('accessible-mode');
+document.body.style.fontSize = '';
+}
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+renderHome();
+renderServices();
+renderMasters();
+renderPrices();
+renderNews();
+renderReviews();
+renderBookingSelectors();
+renderAdmin();
+});
+</script>
+</body>
+</html>
