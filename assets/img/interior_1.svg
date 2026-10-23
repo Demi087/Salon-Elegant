@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" width="600" height="380">
+  <defs>
+    <linearGradient id="recGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3f3f46" />
+      <stop offset="100%" stop-color="#18181b" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="380" rx="8" fill="url(#recGrad)" />
+  <line x1="0" y1="260" x2="600" y2="260" stroke="#71717a" stroke-width="2" />
+  <rect x="140" y="160" width="320" height="100" rx="8" fill="#e4e4e7" stroke="#d4d4d8" stroke-width="4" />
+  <rect x="220" y="180" width="160" height="40" rx="4" fill="#881337" />
+  <text x="300" y="205" font-family="Georgia, serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">ЭЛЕГАНТ</text>
+  <text x="300" y="320" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">Зона рецепции и гостевой холл</text>
+  <text x="300" y="344" font-family="Arial, sans-serif" font-size="12" fill="#a1a1aa" text-anchor="middle">Уютная атмосфера, свежий кофе и персональное внимание к каждому гостю</text>
+</svg>

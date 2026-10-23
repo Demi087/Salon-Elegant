@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" width="600" height="360">
+  <defs>
+    <linearGradient id="newsGrad_1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#881337" />
+      <stop offset="100%" stop-color="#18181b" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="360" rx="10" fill="url(#newsGrad_1)" />
+  
+  <rect x="32" y="32" width="160" height="28" rx="4" fill="#f59e0b" />
+  <text x="112" y="51" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1c1917" text-anchor="middle">НОВОСТЬ САЛОНА</text>
+
+  <text x="32" y="112" font-family="Georgia, serif" font-size="24" font-weight="bold" fill="#ffffff">Открытие обновленного спа-кабинета</text>
+  
+  <rect x="32" y="140" width="536" height="1" fill="#ffffff" opacity="0.2" />
+
+  <text x="32" y="180" font-family="Arial, sans-serif" font-size="14" fill="#e4e4e7">Новые гидромассажные программы и релакс-зоны с ароматерапией</text>
+  <text x="32" y="210" font-family="Arial, sans-serif" font-size="13" fill="#a1a1aa">Салон «Элегант» • Программа лояльности и скидки постоянным клиентам</text>
+
+  <g transform="translate(32, 280)">
+    <rect width="200" height="44" rx="6" fill="#ffffff" />
+    <text x="100" y="27" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#18181b" text-anchor="middle">ПОДРОБНЕЕ</text>
+  </g>
+</svg>
